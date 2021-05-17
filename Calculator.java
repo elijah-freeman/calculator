@@ -38,13 +38,13 @@ public class Calculator {
 	 */
 	public Calculator() {
 		buffer = new ArrayDeque<String>();
-		this.operators = new String[NUMBER_OF_OPERATORS];
-		this.operators[0] = ")";
-		this.operators[1] = "^";
-		this.operators[2] = "*";
-		this.operators[3] = "/";
-		this.operators[4] = "+";
-		this.operators[5] = "-";
+		operators = new String[NUMBER_OF_OPERATORS];
+		operators[0] = ")";
+		operators[1] = "^";
+		operators[2] = "*";
+		operators[3] = "/";
+		operators[4] = "+";
+		operators[5] = "-";
 	}
 
 	/**
@@ -56,9 +56,9 @@ public class Calculator {
 	 * 		    operand.
 	 */
 	public void addElement(String element) {
-		this.buffer.addFirst(element);
+		buffer.addFirst(element);
 		if (!isOperator(element) && buffer.size() > 2) {
-			checkPrecedence(this.recentOperator); 
+			checkParenthesisExponents(recentOperator); 
 		}
 	}
 
@@ -71,7 +71,7 @@ public class Calculator {
 	private boolean isOperator(String element) {
 		for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
 			if (element.equals(operators[i])) {
-				this.recentOperator = element;
+				recentOperator = element;
 				return true;
 			}
 		}
@@ -79,30 +79,19 @@ public class Calculator {
 	}
 
 	/**
-	 * Checks precendence of operand in order of PEMDAS.
-	 * TODO may need to remove isSubtract() and isAddition check.
-	 * We don't want to add and subtract immediately because we 
-	 * still have precedence.
-	 *
-	 * @param  operator  an unknown operator to be classified.
+	 * 
 	 */
-	private void checkPrecedence(String operator) {
-		final double secondOperand = Double.parseDouble(this.buffer.removeFirst());
-		this.buffer.removeFirst();
-		final double firstOperand = Double.parseDouble(this.buffer.removeFirst());
+	private void checkParenthesisExponents(String operator) {
 		if (isParenthesis(operator)) {
+
+			
 			//TODO define what to do.
 		} else if (isExponentiation(operator)) {
+			final double secondOperand = Double.parseDouble(buffer.removeFirst());
+			buffer.removeFirst();
+			final double firstOperand = Double.parseDouble(buffer.removeFirst());
 			exponentiate(firstOperand, secondOperand);
-		} else if (isMultiplication(operator)) {
-			multiply(firstOperand, secondOperand);
-		} else if (isDivision(operator)) {
-			divide(firstOperand, secondOperand); 
-		} else if (isAddition(operator)) {
-			add(firstOperand, secondOperand);
-		} else if (isSubtraction(operator)) {
-			subtract(firstOperand, secondOperand);
-		}
+		} 
 	}
 
 	/**
@@ -180,7 +169,7 @@ public class Calculator {
 	 */
 	private void exponentiate(double base, double exponent) {
 		final double result = Math.pow(base, exponent);
-		this.buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(result));
 	}
 
 	/**
@@ -190,7 +179,7 @@ public class Calculator {
 	 */
 	private void multiply(double multiplier, double multiplicand) {
 		final double result = multiplier * multiplicand;
-		this.buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(result));
 	}
 
 	/**
@@ -200,7 +189,7 @@ public class Calculator {
 	 */
 	private void divide(double dividend, double divisor) {
 		final double result = dividend / divisor;
-		this.buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(result));
 	}
 
 	/**
@@ -210,7 +199,7 @@ public class Calculator {
 	 */
 	private void add(double firstSummand, double secondSummand) {
 		final double result = firstSummand + secondSummand;
-		this.buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(result));
 	}
 
 	/**
@@ -220,7 +209,7 @@ public class Calculator {
 	 */
 	private void subtract(double minuend, double subtrahend) {
 		final double result = minuend - subtrahend;
-		this.buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(result));
 	}
 
 	/**
@@ -229,14 +218,52 @@ public class Calculator {
 	 * @return  the final result of the calculation.
 	 */
 	public double getResult() {
-		return Double.parseDouble(this.buffer.removeFirst());
+		execute();
+		return Double.parseDouble(buffer.removeFirst());
 	}
+
+	private void execute() {
+		Deque<String> temp = new ArrayDeque<String>();
+		while (buffer.size() > 0) {
+			final String element = buffer.removeFirst();
+			if (isOperator(element)) {
+				if (isMultiplication(element)) {
+					final double secondOperand = Double.parseDouble(buffer.removeFirst());
+					final double firstOperand = Double.parseDouble(temp.removeFirst());
+					multiply(firstOperand, secondOperand);
+				} else if (isDivision(element)) {
+					final double secondOperand = Double.parseDouble(buffer.removeFirst());
+					final double firstOperand = Double.parseDouble(temp.removeFirst());
+					divide(firstOperand, secondOperand);
+				} else {
+					temp.addFirst(element);
+				}
+			} else {
+				temp.addFirst(element);
+			}
+		}
+		while (temp.size() > 0) {
+			final String element = temp.removeFirst();
+			if (isOperator(element)) {
+				final double secondOperand = Double.parseDouble(temp.removeFirst());
+				final double firstOperand = Double.parseDouble(buffer.removeFirst());
+				if (isAddition(element)) {
+					add(firstOperand, secondOperand);
+				} else if (isSubtraction(element)) {
+					subtract(firstOperand, secondOperand);
+				}
+			} else {
+				buffer.addFirst(element);
+			}
+		}
+	}
+
 	/**
 	 * Removes all elements from the buffer.
 	 */
 	private void clearBuffer() {
-		while (this.buffer.size() > 0) {
-			this.buffer.removeFirst();
+		while (buffer.size() > 0) {
+			buffer.removeFirst();
 		}
 	}
 
@@ -245,7 +272,13 @@ public class Calculator {
 		System.out.println("Calculator Class\n");
 		calculator.addElement("5");
 		calculator.addElement("+");
+		calculator.addElement("2");
+		calculator.addElement("^");
+		calculator.addElement("3");
+		calculator.addElement("+");
 		calculator.addElement("5");
+		calculator.addElement("*");
+		calculator.addElement("3");
 		calculator.addElement("-");
 		calculator.addElement("1");
 		System.out.printf("Result: %f\n", calculator.getResult());
