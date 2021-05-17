@@ -18,7 +18,7 @@ public class Calculator {
 	private static final int NUMBER_OF_OPERATORS = 6;
 
 	/**
-	 * Buffer than contains the inputted operators and operands.
+	 * Buffer that contains the operators and operands.
 	 */
 	private Deque<String> buffer;
 
@@ -33,7 +33,8 @@ public class Calculator {
 	private String[] operators;
 
 	/**
-	 * Constructs calculator object. Initializes buffer.
+	 * Constructs calculator object. Initializes buffer and sets the official
+	 * list of acceptable operators.
 	 */
 	public Calculator() {
 		buffer = new ArrayDeque<String>();
@@ -47,7 +48,12 @@ public class Calculator {
 	}
 
 	/**
-	 * Adds an element to the buffer.
+	 * Adds an element to the buffer. If element is not and operator and
+	 * more than two elements in a buffer then check precedence of the
+	 * most recent operator.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
 	 */
 	public void addElement(String element) {
 		this.buffer.addFirst(element);
@@ -57,24 +63,28 @@ public class Calculator {
 	}
 
 	/**
-	 * Removes all elements from the buffer.
+	 * Checks if element is an operator. If true then the operator is saved.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
 	 */
-	private void clearBuffer() {
-		while (this.buffer.size() > 0) {
-			this.buffer.removeFirst();
+	private boolean isOperator(String element) {
+		for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
+			if (element.equals(operators[i])) {
+				this.recentOperator = element;
+				return true;
+			}
 		}
-	}
-
-	/**
-	 * TODO may remove.
-	 */
-	public void calculate() {
-		
+		return false;
 	}
 
 	/**
 	 * Checks precendence of operand in order of PEMDAS.
 	 * TODO may need to remove isSubtract() and isAddition check.
+	 * We don't want to add and subtract immediately because we 
+	 * still have precedence.
+	 *
+	 * @param  operator  an unknown operator to be classified.
 	 */
 	private void checkPrecedence(String operator) {
 		final double secondOperand = Double.parseDouble(this.buffer.removeFirst());
@@ -96,21 +106,11 @@ public class Calculator {
 	}
 
 	/**
-	 * Checks if element is an operator. If true then the operator is stored.
-	 */
-	private boolean isOperator(String element) {
-		for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
-			if (element.equals(operators[i])) {
-				this.recentOperator = element;
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Checks if element is a parenthesis.
-	 * @return boolean, true if element is a closing paranthesis. False otherwise.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
+	 * @return          true if element is a closing paranthesis. False otherwise.
 	 */
 	private boolean isParenthesis(String element) {
 		return element.equals(")");
@@ -118,7 +118,10 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies exponentiation.
-	 * @return boolean, true if operand specifies exponentiation. False otherwise.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
+	 * @return          true if operand specifies exponentiation. False otherwise.
 	 */
 	private boolean isExponentiation(String element) {
 		return element.equals("^");
@@ -126,7 +129,10 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies mulitiplication.
-	 * @return boolean, true if operand specifies multiplicatin. False otherwise.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
+	 * @return          true if operand specifies multiplicatin. False otherwise.
 	 */
 	private boolean isMultiplication(String element) {
 		return element.equals("*");
@@ -134,7 +140,10 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies division.
-	 * @return boolean, true if operand specifies division. False otherwise.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
+	 * @return          true if operand specifies division. False otherwise.
 	 */
 	private boolean isDivision(String element) {
 		return element.equals("/");
@@ -142,7 +151,10 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies addition.
-	 * @return boolean, true if operand specifies addition. False otherwise.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
+	 * @return          true if operand specifies addition. False otherwise.
 	 */
 	private boolean isAddition(String element) {
 		return element.equals("+");
@@ -150,15 +162,31 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies subtraction.
-	 * @return boolean, true if operand specifies subtraction. False otherwise.
+	 *
+	 * @param  element  a string representing either an operator or an 
+	 * 		    operand.
+	 * @return          true if operand specifies subtraction. False otherwise.
 	 */
 	private boolean isSubtraction(String element) {
 		return element.equals("-");
 	}
 
 	/**
+	 * Checks if operand specifies exponentiation.
+	 * 
+	 * @param  base      the base that the exponent is to operate on.
+	 * @param  exponent  the power that the base is raised too.
+	 * @return           true if operand specifies exponentiation. False otherwise.
+	 */
+	private void exponentiate(double base, double exponent) {
+		final double result = Math.pow(base, exponent);
+		this.buffer.addFirst(Double.toString(result));
+	}
+
+	/**
 	 * Checks if operand specifies multiplication..
-	 * @return double, true if operand specifies multiplication. False otherwise.
+	 *
+	 * @return  true if operand specifies multiplication. False otherwise.
 	 */
 	private void multiply(double multiplier, double multiplicand) {
 		final double result = multiplier * multiplicand;
@@ -167,7 +195,8 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies multiplication.
-	 * @return double, true if operand specifies division. False otherwise.
+	 *
+	 * @return  true if operand specifies division. False otherwise.
 	 */
 	private void divide(double dividend, double divisor) {
 		final double result = dividend / divisor;
@@ -176,7 +205,8 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies addition.
-	 * @return double, true if operand specifies addition. False otherwise.
+	 *
+	 * @return  true if operand specifies addition. False otherwise.
 	 */
 	private void add(double firstSummand, double secondSummand) {
 		final double result = firstSummand + secondSummand;
@@ -185,7 +215,8 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies subtraction.
-	 * @return double, true if operand specifies subtraction. False otherwise.
+	 *
+	 * @return  true if operand specifies subtraction. False otherwise.
 	 */
 	private void subtract(double minuend, double subtrahend) {
 		final double result = minuend - subtrahend;
@@ -193,20 +224,20 @@ public class Calculator {
 	}
 
 	/**
-	 * Checks if operand specifies exponentiation.
-	 * @return double, true if operand specifies exponentiation. False otherwise.
-	 */
-	private void exponentiate(double base, double exponent) {
-		final double result = Math.pow(base, exponent);
-		this.buffer.addFirst(Double.toString(result));
-	}
-
-	/**
 	 * Returns the final result of the calculation.
-	 * @return double, the final result of the calculation.
+	 *
+	 * @return  the final result of the calculation.
 	 */
 	public double getResult() {
 		return Double.parseDouble(this.buffer.removeFirst());
+	}
+	/**
+	 * Removes all elements from the buffer.
+	 */
+	private void clearBuffer() {
+		while (this.buffer.size() > 0) {
+			this.buffer.removeFirst();
+		}
 	}
 
 	public static void main(String[] args) {
