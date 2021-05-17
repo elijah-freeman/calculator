@@ -1,8 +1,9 @@
 /*H*****************************************************************************
  * Filename: Calculator.java
  * Description: Defines a calculator class 
- * Comment:
+ * Comment: Paranthesis implementation is not complete.
  * Modified: 2021-05-11	File Created.
+ * 	     2021-05-17 Finished implementation w/o paranthesis.
  * Author: Elijah Freeman (elijah@elijahfreeman.com, elijahfreeman.com)
  ****************************************************************************H*/
 
@@ -57,7 +58,7 @@ public class Calculator {
 	 */
 	public void addElement(String element) {
 		buffer.addFirst(element);
-		if (!isOperator(element) && buffer.size() > 2) {
+		if (!isOperator(element) && buffer.size() > 2 || isParenthesis(element)) {
 			checkParenthesisExponents(recentOperator); 
 		}
 	}
@@ -79,13 +80,26 @@ public class Calculator {
 	}
 
 	/**
-	 * 
+	 * TODO Parathesis implementation is not finished.
 	 */
 	private void checkParenthesisExponents(String operator) {
 		if (isParenthesis(operator)) {
+			buffer.removeFirst();
+			String element = buffer.removeFirst();
+			while (!element.equals(")")) {
+				if (!isOperator(element)) {
+					final double secondOperand = Double.parseDouble(element);
+//					final String operator = buffer.removeFirst();
+					if (isExponentiation(operator)) {
+						final double firstOperand = Double.parseDouble(buffer.removeFirst());
+						exponentiate(firstOperand, secondOperand);
+					} else {
+						execute();
+					}
 
-			
-			//TODO define what to do.
+				}
+			}
+				
 		} else if (isExponentiation(operator)) {
 			final double secondOperand = Double.parseDouble(buffer.removeFirst());
 			buffer.removeFirst();
