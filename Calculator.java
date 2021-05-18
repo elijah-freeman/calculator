@@ -3,7 +3,7 @@
  * Description: Defines a calculator class 
  * Comment: Paranthesis implementation is not complete.
  * Modified: 2021-05-11	File Created.
- * 	     2021-05-17 Finished implementation w/o paranthesis.
+ * 	     2021-05-17 Finished implementation w/o parenthesis.
  * Author: Elijah Freeman (elijah@elijahfreeman.com, elijahfreeman.com)
  ****************************************************************************H*/
 
@@ -11,8 +11,8 @@ import java.util.*;
 
 /**
  * Defines a Calculator that can perform the following calculations: 
- * multiplication, addition, subtraction, exponentiation. Calculator can also 
- * handle paranthesis, and operates in PEMDAS fashion.
+ * multiplication, addition, subtraction, exponentiation. Calculator  
+ * operate in EMDAS fashion.
  */
 public class Calculator {
 
@@ -58,8 +58,8 @@ public class Calculator {
 	 */
 	public void addElement(String element) {
 		buffer.addFirst(element);
-		if (!isOperator(element) && buffer.size() > 2 || isParenthesis(element)) {
-			checkParenthesisExponents(recentOperator); 
+		if (!isOperator(element) && buffer.size() > 2) {
+			checkExponents(recentOperator); 
 		}
 	}
 
@@ -80,27 +80,13 @@ public class Calculator {
 	}
 
 	/**
-	 * TODO Parathesis implementation is not finished.
+	 * Checks if the operator specifies exponentiation. If true, then carry
+	 * out operation.
+	 *
+	 * @param  operator  an operator to be checked.
 	 */
-	private void checkParenthesisExponents(String operator) {
-		if (isParenthesis(operator)) {
-			buffer.removeFirst();
-			String element = buffer.removeFirst();
-			while (!element.equals(")")) {
-				if (!isOperator(element)) {
-					final double secondOperand = Double.parseDouble(element);
-//					final String operator = buffer.removeFirst();
-					if (isExponentiation(operator)) {
-						final double firstOperand = Double.parseDouble(buffer.removeFirst());
-						exponentiate(firstOperand, secondOperand);
-					} else {
-						execute();
-					}
-
-				}
-			}
-				
-		} else if (isExponentiation(operator)) {
+	private void checkExponents(String operator) {
+		if (isExponentiation(operator)) {
 			final double secondOperand = Double.parseDouble(buffer.removeFirst());
 			buffer.removeFirst();
 			final double firstOperand = Double.parseDouble(buffer.removeFirst());
@@ -108,16 +94,6 @@ public class Calculator {
 		} 
 	}
 
-	/**
-	 * Checks if element is a parenthesis.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return          true if element is a closing paranthesis. False otherwise.
-	 */
-	private boolean isParenthesis(String element) {
-		return element.equals(")");
-	}
 
 	/**
 	 * Checks if operand specifies exponentiation.
@@ -280,21 +256,5 @@ public class Calculator {
 			buffer.removeFirst();
 		}
 	}
-
-	public static void main(String[] args) {
-		Calculator calculator = new Calculator();
-		System.out.println("Calculator Class\n");
-		calculator.addElement("5");
-		calculator.addElement("+");
-		calculator.addElement("2");
-		calculator.addElement("^");
-		calculator.addElement("3");
-		calculator.addElement("+");
-		calculator.addElement("5");
-		calculator.addElement("*");
-		calculator.addElement("3");
-		calculator.addElement("-");
-		calculator.addElement("1");
-		System.out.printf("Result: %f\n", calculator.getResult());
-	}
 }
+
