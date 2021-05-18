@@ -22,7 +22,7 @@ public class MainFrame extends JFrame  {
 		setResizable(false);
 		setSize(350, 500);
 		setLocation(500, 500);
-		setTitle("Calculator 3");
+		setTitle("Calculator");
 		setLayout(new BorderLayout());
 		buttonPanel = new ButtonPanel();
 		inputPrompt = new InputPrompt();
