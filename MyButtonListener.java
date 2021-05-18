@@ -9,5 +9,5 @@
 import java.util.EventListener;
 
 public interface MyButtonListener extends EventListener  {
-    public void buttonEventOccured(MyButtonEvent e);
+	public void buttonEventOccured(MyButtonEvent e);
 }

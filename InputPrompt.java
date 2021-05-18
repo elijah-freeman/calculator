@@ -12,35 +12,34 @@ import java.util.ArrayList;
 
 public class InputPrompt extends JPanel {
 
-    private JTextArea textArea;
-    private ArrayList<String> numberList;
+	private JTextArea textArea;
+	private ArrayList<String> numberList;
 
-    public InputPrompt() {
-        textArea = new JTextArea(1, 8);
-        textArea.setFont(new Font("Gill Sans", Font.PLAIN, 50));
-        textArea.setBackground(Color.LIGHT_GRAY);
-        textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        add(textArea);
-        numberList = new ArrayList<>();
-        setBackground(Color.BLACK);
-    }
+	public InputPrompt() {
+		textArea = new JTextArea(1, 8);
+		textArea.setFont(new Font("Gill Sans", Font.PLAIN, 50));
+		textArea.setBackground(Color.LIGHT_GRAY);
+		textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		add(textArea);
+		numberList = new ArrayList<>();
+		setBackground(Color.BLACK);
+	}
 
-    public JTextArea getTextField() {
-        return textArea;
-    }
+	public JTextArea getTextField() {
+		return textArea;
+	}
 
-    public void appendNumber(String text) {
-        textArea.append(text);
-        numberList.add(text);
+	public void appendNumber(String text) {
+		textArea.append(text);
+		numberList.add(text);
+	}
 
-    }
+	public ArrayList<String> getList() {
+		return numberList;
+	}
 
-    public ArrayList<String> getList() {
-        return numberList;
-    }
-
-    public void clearText() {
-        textArea.setText(null);
-
-    }
+	public void clearText() {
+		textArea.setText(null);
+	}
 }
+

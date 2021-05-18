@@ -9,7 +9,7 @@
 import java.util.EventObject;
 
 public class MyButtonEvent extends EventObject {
-    public MyButtonEvent(Object source) {
-        super(source);
-    }
+	public MyButtonEvent(Object source) {
+		super(source);
+	}
 }
