@@ -1,5 +1,5 @@
 /*H*****************************************************************************
- * Filename: InputPrompt.java
+ * Filename: DisplayPanel.java
  * Description: 
  * Comment:
  * Modified: 2021-05-05	Added header comments.
@@ -10,12 +10,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class InputPrompt extends JPanel {
+public class DisplayPanel extends JPanel {
 
 	private JTextArea textArea;
 	private ArrayList<String> numberList;
 
-	public InputPrompt() {
+	public DisplayPanel() {
 		textArea = new JTextArea(1, 8);
 		textArea.setFont(new Font("Gill Sans", Font.PLAIN, 50));
 		textArea.setBackground(Color.LIGHT_GRAY);
@@ -29,9 +29,19 @@ public class InputPrompt extends JPanel {
 		return textArea;
 	}
 
-	public void appendNumber(String text) {
+	public void appendElement(String text) {
 		textArea.append(text);
 		numberList.add(text);
+	}
+
+	public void removeLastElement() {
+		if (numberList.size() > 0) {
+			numberList.remove(numberList.size()- 1);
+			clearText();
+			for (String element : numberList) {
+				textArea.append(element);
+			}
+		}
 	}
 
 	public ArrayList<String> getList() {

@@ -8,13 +8,11 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame  {
 
 	private ButtonPanel buttonPanel;
-	private InputPrompt inputPrompt;
+	private DisplayPanel inputPrompt;
 
 	public MainFrame() {
 		setVisible(true);
@@ -25,8 +23,8 @@ public class MainFrame extends JFrame  {
 		setTitle("Calculator");
 		setLayout(new BorderLayout());
 		buttonPanel = new ButtonPanel();
-		inputPrompt = new InputPrompt();
-		inputPrompt = buttonPanel.getInputPrompt();
+		inputPrompt = new DisplayPanel();
+		inputPrompt = buttonPanel.getDisplayPanel();
 		add(inputPrompt, BorderLayout.NORTH);
 		add(buttonPanel, BorderLayout.CENTER);
 	}

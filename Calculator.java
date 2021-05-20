@@ -21,7 +21,7 @@ public class Calculator {
 	/**
 	 * Buffer that contains the operators and operands.
 	 */
-	private Deque<String> buffer;
+	private final Deque<String> buffer;
 
 	/** 
 	 * Most recent operator.
@@ -31,14 +31,14 @@ public class Calculator {
 	/**
 	 * List of operators.
 	 */
-	private String[] operators;
+	private final String[] operators;
 
 	/**
 	 * Constructs calculator object. Initializes buffer and sets the official
 	 * list of acceptable operators.
 	 */
 	public Calculator() {
-		buffer = new ArrayDeque<String>();
+		buffer = new ArrayDeque<>();
 		operators = new String[NUMBER_OF_OPERATORS];
 		operators[0] = ")";
 		operators[1] = "^";
@@ -155,7 +155,6 @@ public class Calculator {
 	 * 
 	 * @param  base      the base that the exponent is to operate on.
 	 * @param  exponent  the power that the base is raised too.
-	 * @return           true if operand specifies exponentiation. False otherwise.
 	 */
 	private void exponentiate(double base, double exponent) {
 		final double result = Math.pow(base, exponent);
@@ -164,8 +163,6 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies multiplication..
-	 *
-	 * @return  true if operand specifies multiplication. False otherwise.
 	 */
 	private void multiply(double multiplier, double multiplicand) {
 		final double result = multiplier * multiplicand;
@@ -174,8 +171,6 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies multiplication.
-	 *
-	 * @return  true if operand specifies division. False otherwise.
 	 */
 	private void divide(double dividend, double divisor) {
 		final double result = dividend / divisor;
@@ -184,8 +179,6 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies addition.
-	 *
-	 * @return  true if operand specifies addition. False otherwise.
 	 */
 	private void add(double firstSummand, double secondSummand) {
 		final double result = firstSummand + secondSummand;
@@ -194,8 +187,6 @@ public class Calculator {
 
 	/**
 	 * Checks if operand specifies subtraction.
-	 *
-	 * @return  true if operand specifies subtraction. False otherwise.
 	 */
 	private void subtract(double minuend, double subtrahend) {
 		final double result = minuend - subtrahend;
@@ -213,7 +204,7 @@ public class Calculator {
 	}
 
 	private void execute() {
-		Deque<String> temp = new ArrayDeque<String>();
+		Deque<String> temp = new ArrayDeque<>();
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
 			if (isOperator(element)) {
@@ -222,8 +213,8 @@ public class Calculator {
 					final double firstOperand = Double.parseDouble(temp.removeFirst());
 					multiply(firstOperand, secondOperand);
 				} else if (isDivision(element)) {
-					final double secondOperand = Double.parseDouble(buffer.removeFirst());
-					final double firstOperand = Double.parseDouble(temp.removeFirst());
+					final double secondOperand = Double.parseDouble(temp.removeFirst());
+					final double firstOperand = Double.parseDouble(buffer.removeFirst());
 					divide(firstOperand, secondOperand);
 				} else {
 					temp.addFirst(element);
@@ -249,12 +240,17 @@ public class Calculator {
 	}
 
 	/**
+	 * Removes element that was added last.
+	 */
+	public void removeLastElement() {
+		buffer.removeFirst();
+	}
+
+	/**
 	 * Removes all elements from the buffer.
 	 */
-	private void clearBuffer() {
-		while (buffer.size() > 0) {
-			buffer.removeFirst();
-		}
+	public void clearBuffer() {
+		buffer.clear();
 	}
 }
 
