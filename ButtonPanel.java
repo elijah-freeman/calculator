@@ -13,12 +13,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
 
+/**
+ * Initializes, formats, and styles all buttons for the calculator GUI.
+ */
 public class ButtonPanel extends JPanel {
 
 	private DisplayPanel displayPanel;
 	private Calculator calculator;
 	private LinkedHashMap<String, JButton> buttons;
 
+	/**
+	 * Constructs button panel. Initializes and formats all buttons.
+	 */
 	public ButtonPanel() {
 		GridLayout layout = new GridLayout(5,4);
 		displayPanel = new DisplayPanel();
@@ -33,12 +39,18 @@ public class ButtonPanel extends JPanel {
 		formatDeleteButton(displayPanel);
 	}
 
+	/**
+	 * Format the layout for calculator GUI buttons.
+	 */
 	private void formatGridLayout(GridLayout layout) {
 		setLayout(layout);
 		layout.setHgap(3);
 		layout.setVgap(3);
 	}
 
+	/**
+	 * Initialize all calculator GUI buttons.
+	 */
 	private void initializeButtons() {
 		buttons.put("clr", makeButton("clr"));
 		buttons.put("del", makeButton("del"));
@@ -66,10 +78,16 @@ public class ButtonPanel extends JPanel {
 		buttons.put("=", makeButton("="));
 	}
 
+	/**
+	 * Add all buttons to this button panel.
+	 */ 
 	private void addButtons() {
 		buttons.values().forEach(this::add);
 	}
 
+	/**
+	 * Styles all operator buttons.
+	 */
 	private void styleOperatorButtons() {
 		buttons.get("+").setBackground(Color.RED);
 		buttons.get("-").setBackground(Color.RED);
@@ -82,6 +100,13 @@ public class ButtonPanel extends JPanel {
 		buttons.get("neg").setBackground(Color.RED);
 	}
 
+	/**
+	 * Button factory method that makes and returns a generic stylized button
+	 * with an eventlistener attached.
+	 *
+	 * @param  name  a String name that is to be displayed on the button (e.g. "+")
+	 * @return	 a stylized JButton with the name displayed. 
+	 */
 	private JButton makeButton(String name) {
 		JButton button = new JButton(name);
 		button.setFont(new Font("Gill Sans", Font.BOLD, 20));
@@ -109,15 +134,29 @@ public class ButtonPanel extends JPanel {
 		return button;
 	}
 
+	/**
+	 * Formats the equal button. Clears display panel and appends the 
+	 * result to the display panel.
+	 *
+	 * @param  displayPanel  a panel that displays the input text.
+	 */
 	private void formatEqualButton(DisplayPanel displayPanel) {
 		styleEqualButton();
 		buttons.get("=").addActionListener(event -> {
 			System.out.println(displayPanel.getList());
-			displayPanel.clearText();
-			displayPanel.appendElement(calculator.getResult() + "");
+			if (calculator.getBufferSize() > 0) {
+				displayPanel.clearText();
+				calculator.addElement("=");
+				displayPanel.appendElement(calculator.getResult() + "");
+			}
 		});
 	}
 
+	/**
+	 * Formats the clear button. Clears the display panel and calculator buffer.
+	 *
+	 * @param  displayPanel  a panel that displays the input text.
+	 */
 	private void formatClearButton(DisplayPanel displayPanel) {
 		buttons.get("clr").addActionListener(event -> {
 			displayPanel.clearText();
@@ -125,14 +164,24 @@ public class ButtonPanel extends JPanel {
 			calculator.clearBuffer();
 		});
 	}
-
+	/**
+	 * Formats the delete button. One input character deleted at a time from 
+	 * the display panel.
+	 *
+	 * @param  displayPanel  a panel that displays the input text.
+	 */
 	private void formatDeleteButton(DisplayPanel displayPanel) {
 		buttons.get("del").addActionListener(event -> {
-			calculator.removeLastElement();
-			displayPanel.removeLastElement();
+			if (calculator.getBufferSize() > 0) {
+				calculator.removeLastElement();
+				displayPanel.removeLastElement();
+			}
 		});
 	}
 
+	/**
+	 * Styles the equal button.
+	 */
 	private void styleEqualButton() {
 		buttons.get("=").setFont(new Font("Arial", Font.BOLD, 15));
 		buttons.get("=").setBackground(Color.ORANGE);
@@ -141,6 +190,11 @@ public class ButtonPanel extends JPanel {
 		buttons.get("=").setBorderPainted(false);
 	}
 
+	/**
+	 * Getter method for displayPanel.
+	 *
+	 * @return the display panel.
+	 */
 	public DisplayPanel getDisplayPanel() {
 		return displayPanel;
 	}

@@ -10,6 +10,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Displays the input text from the user and the calculated
+ * result.
+ */
 public class DisplayPanel extends JPanel {
 
 	private JTextArea textArea;

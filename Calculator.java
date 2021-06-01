@@ -40,6 +40,7 @@ public class Calculator {
 	public Calculator() {
 		buffer = new ArrayDeque<>();
 		operators = new String[NUMBER_OF_OPERATORS];
+		recentOperator = null;
 		operators[0] = ")";
 		operators[1] = "^";
 		operators[2] = "*";
@@ -49,7 +50,7 @@ public class Calculator {
 	}
 
 	/**
-	 * Adds an element to the buffer. If element is not and operator and
+	 * Adds an element to the buffer. If element is not an operator and
 	 * more than two elements in a buffer then check precedence of the
 	 * most recent operator.
 	 *
@@ -58,8 +59,33 @@ public class Calculator {
 	 */
 	public void addElement(String element) {
 		buffer.addFirst(element);
+		checkIfMultiDigit(element);
 		if (!isOperator(element) && buffer.size() > 2) {
 			checkExponents(recentOperator); 
+		}
+	}
+
+	private void checkIfMultiDigit(String element) {
+		if (buffer.size() > 1) {
+			///////////////////////////////////////////////////////////////	
+			//TODO find better placement for this. Not appropriate
+			// in this method.
+			if (element.equals("=")) {
+				buffer.removeFirst();
+			}
+			///////////////////////////////////////////////////////////////	
+			String currentElement = buffer.removeFirst();
+			while (!isOperator(currentElement) && buffer.size() > 0) {
+				String nextElement = buffer.removeFirst();
+				if (isOperator(nextElement)) {
+					buffer.addFirst(nextElement);
+					break;
+				} else {
+					nextElement += currentElement;
+					currentElement = nextElement;
+				}
+			}
+			buffer.addFirst(currentElement);
 		}
 	}
 
@@ -205,6 +231,7 @@ public class Calculator {
 
 	private void execute() {
 		Deque<String> temp = new ArrayDeque<>();
+		System.out.printf("Buffer in Execute: %s\n", buffer.toString());
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
 			if (isOperator(element)) {
@@ -251,6 +278,13 @@ public class Calculator {
 	 */
 	public void clearBuffer() {
 		buffer.clear();
+	}
+
+	/**
+	 * Returns the size of the buffer.
+	 */
+	public int getBufferSize() {
+		return buffer.size();
 	}
 }
 
