@@ -59,21 +59,14 @@ public class Calculator {
 	 */
 	public void addElement(String element) {
 		buffer.addFirst(element);
-		checkIfMultiDigit(element);
+		checkIfMultiDigit();
 		if (!isOperator(element) && buffer.size() > 2) {
 			checkExponents(recentOperator); 
 		}
 	}
 
-	private void checkIfMultiDigit(String element) {
+	private void checkIfMultiDigit() {
 		if (buffer.size() > 1) {
-			///////////////////////////////////////////////////////////////	
-			//TODO find better placement for this. Not appropriate
-			// in this method.
-			if (element.equals("=")) {
-				buffer.removeFirst();
-			}
-			///////////////////////////////////////////////////////////////	
 			String currentElement = buffer.removeFirst();
 			while (!isOperator(currentElement) && buffer.size() > 0) {
 				String nextElement = buffer.removeFirst();
@@ -81,12 +74,17 @@ public class Calculator {
 					buffer.addFirst(nextElement);
 					break;
 				} else {
-					nextElement += currentElement;
-					currentElement = nextElement;
+					currentElement = combineDigits(nextElement, currentElement);
 				}
 			}
 			buffer.addFirst(currentElement);
 		}
+	}
+
+	private String combineDigits(String firstDigit, String secondDigit) {
+			firstDigit += secondDigit;
+			String multiDigitNumber = firstDigit;
+			return multiDigitNumber;
 	}
 
 	/**

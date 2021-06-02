@@ -146,7 +146,6 @@ public class ButtonPanel extends JPanel {
 			System.out.println(displayPanel.getList());
 			if (calculator.getBufferSize() > 0) {
 				displayPanel.clearText();
-				calculator.addElement("=");
 				displayPanel.appendElement(calculator.getResult() + "");
 			}
 		});
