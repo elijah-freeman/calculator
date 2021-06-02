@@ -16,8 +16,8 @@ import java.util.ArrayList;
  */
 public class DisplayPanel extends JPanel {
 
-	private JTextArea textArea;
-	private ArrayList<String> numberList;
+	private final JTextArea textArea;
+	private final ArrayList<String> numberList;
 
 	public DisplayPanel() {
 		textArea = new JTextArea(1, 8);
@@ -27,10 +27,6 @@ public class DisplayPanel extends JPanel {
 		add(textArea);
 		numberList = new ArrayList<>();
 		setBackground(Color.BLACK);
-	}
-
-	public JTextArea getTextField() {
-		return textArea;
 	}
 
 	public void appendElement(String text) {

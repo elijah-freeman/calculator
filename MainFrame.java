@@ -11,9 +11,6 @@ import java.awt.*;
 
 public class MainFrame extends JFrame  {
 
-	private ButtonPanel buttonPanel;
-	private DisplayPanel inputPrompt;
-
 	public MainFrame() {
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,8 +19,9 @@ public class MainFrame extends JFrame  {
 		setLocation(500, 500);
 		setTitle("Calculator");
 		setLayout(new BorderLayout());
-		buttonPanel = new ButtonPanel();
-		inputPrompt = new DisplayPanel();
+		ButtonPanel buttonPanel = new ButtonPanel();
+		new DisplayPanel();
+		DisplayPanel inputPrompt;
 		inputPrompt = buttonPanel.getDisplayPanel();
 		add(inputPrompt, BorderLayout.NORTH);
 		add(buttonPanel, BorderLayout.CENTER);

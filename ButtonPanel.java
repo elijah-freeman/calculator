@@ -18,9 +18,9 @@ import java.util.LinkedHashMap;
  */
 public class ButtonPanel extends JPanel {
 
-	private DisplayPanel displayPanel;
-	private Calculator calculator;
-	private LinkedHashMap<Calculator.Symbol, JButton> buttons;
+	private final DisplayPanel displayPanel;
+	private final Calculator calculator;
+	private final LinkedHashMap<Calculator.Symbol, JButton> buttons;
 
 	/**
 	 * Constructs button panel. Initializes and formats all buttons.
@@ -144,7 +144,6 @@ public class ButtonPanel extends JPanel {
 	private void formatEqualButton(DisplayPanel displayPanel) {
 		styleEqualButton();
 		buttons.get(Calculator.Symbol.EQUAL).addActionListener(event -> {
-			System.out.println(displayPanel.getList());
 			if (calculator.getBufferSize() > 0) {
 				displayPanel.clearText();
 				displayPanel.appendElement(calculator.getResult() + "");

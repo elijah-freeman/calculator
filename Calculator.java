@@ -50,13 +50,13 @@ public class Calculator {
 		SIX,
 		SEVEN,
 		EIGHT,
-		NINE;
+		NINE
 	}	
 
 	/**
 	 * Maps symbols to their string counter-part.
 	 */
-	protected EnumMap<Symbol, String> symbolMap = new EnumMap<Symbol, String>(Symbol.class);
+	protected EnumMap<Symbol, String> symbolMap = new EnumMap<>(Symbol.class);
 
 	/**
 	 * Constructs calculator object. Initializes buffer and sets the official
@@ -137,8 +137,7 @@ public class Calculator {
 	 */
 	private String combineDigits(String firstDigit, String secondDigit) {
 			firstDigit += secondDigit;
-			String multiDigitNumber = firstDigit;
-			return multiDigitNumber;
+		return firstDigit;
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class Calculator {
 	 * @return 	    true if the operator is a boolean, false otherwise.
 	 */
 	private boolean isOperator(String element) {
-		final String operators[] = {
+		final String[] operators = {
 			symbolMap.get(Symbol.EXPONENTIATION),
 			symbolMap.get(Symbol.MULTIPLICATION),
 			symbolMap.get(Symbol.DIVISION),
@@ -293,7 +292,6 @@ public class Calculator {
 	 */
 	private void calculate() {
 		Deque<String> temp = new ArrayDeque<>();
-		System.out.printf("Buffer in Execute: %s\n", buffer.toString());
 		multiplyAndDivideRemainingElements(temp);
 		addAndSubtractRemainingElements(temp); 
 	}
