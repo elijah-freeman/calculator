@@ -18,34 +18,46 @@ import java.util.LinkedHashMap;
  */
 public class ButtonPanel extends JPanel {
 
+	private static final int ROWS = 5;
+	private static final int COLS = 4;
+	private static final int GAP = 3;
+
+	/**
+	 * The the input and output is displayed.
+	 */
 	private final DisplayPanel displayPanel;
+
+	/**
+	 * Processes operations and defines symbol mapping
+	 */
 	private final Calculator calculator;
+
+	/**
+	 * Maps each symbol to it's respective button.
+	 */
 	private final LinkedHashMap<Calculator.Symbol, JButton> buttons;
 
 	/**
 	 * Constructs button panel. Initializes and formats all buttons.
 	 */
 	public ButtonPanel() {
-		GridLayout layout = new GridLayout(5,4);
+		GridLayout layout = new GridLayout(ROWS, COLS);
 		displayPanel = new DisplayPanel();
 		calculator = new Calculator();
 		buttons = new LinkedHashMap<>();
 		formatGridLayout(layout);
 		initializeButtons();
-		addButtons();
 		styleOperatorButtons();
-		formatEqualButton(displayPanel);
-		formatClearButton(displayPanel);
-		formatDeleteButton(displayPanel);
+		addButtons();
 	}
 
 	/**
 	 * Format the layout for calculator GUI buttons.
 	 */
-	private void formatGridLayout(GridLayout layout) {
+	private void formatGridLayout(final GridLayout layout) {
 		setLayout(layout);
-		layout.setHgap(3);
-		layout.setVgap(3);
+		layout.setHgap(GAP);
+		layout.setVgap(GAP);
 	}
 
 	/**
@@ -76,28 +88,10 @@ public class ButtonPanel extends JPanel {
 		buttons.put(Calculator.Symbol.ZERO, makeButton("0"));
 		buttons.put(Calculator.Symbol.NEGATIVE, makeButton("-"));
 		buttons.put(Calculator.Symbol.EQUAL, makeButton("="));
-	}
 
-	/**
-	 * Add all buttons to this button panel.
-	 */ 
-	private void addButtons() {
-		buttons.values().forEach(this::add);
-	}
-
-	/**
-	 * Styles all operator buttons.
-	 */
-	private void styleOperatorButtons() {
-		buttons.get(Calculator.Symbol.ADDITION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.SUBTRACTION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.MULTIPLICATION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.DIVISION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.EXPONENTIATION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.DECIMAL).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.CLEAR).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.DELETE).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.NEGATIVE).setBackground(Color.RED);
+		formatEqualButton(displayPanel);
+		formatClearButton(displayPanel);
+		formatDeleteButton(displayPanel);
 	}
 
 	/**
@@ -107,15 +101,16 @@ public class ButtonPanel extends JPanel {
 	 * @param  name  a String name that is to be displayed on the button (e.g. "+")
 	 * @return	 a stylized JButton with the name displayed. 
 	 */
-	private JButton makeButton(String name) {
-		JButton button = new JButton(name);
+	private JButton makeButton(final String name) {
+		final JButton button = new JButton(name);
 		button.setFont(new Font("Gill Sans", Font.BOLD, 20));
 		button.setBackground(Color.darkGray);
 		button.setForeground(Color.WHITE);
 		button.setOpaque(true);
 		button.setBorderPainted(false);
 		button.addActionListener(event -> {
-			String element = ((JButton) event.getSource()).getText();
+			final String element = ((JButton) event.getSource()).getText();
+			assert element != null : "element is null";
 			buttons.forEach((k, v) -> {
 				if (v.getText().equals(element)
 						&& !k.equals(Calculator.Symbol.CLEAR)
@@ -125,7 +120,6 @@ public class ButtonPanel extends JPanel {
 						calculator.addElement(calculator.symbolMap.get(k));
 					}
 			});
-			assert(element != null);
 			if (!element.equals(buttons.get(Calculator.Symbol.EQUAL).getText())
 			    && !element.equals(buttons.get(Calculator.Symbol.CLEAR).getText())
 			    && !element.equals(buttons.get(Calculator.Symbol.DELETE).getText())) {
@@ -141,12 +135,11 @@ public class ButtonPanel extends JPanel {
 	 *
 	 * @param  displayPanel  a panel that displays the input text.
 	 */
-	private void formatEqualButton(DisplayPanel displayPanel) {
-		styleEqualButton();
+	private void formatEqualButton(final DisplayPanel displayPanel) {
 		buttons.get(Calculator.Symbol.EQUAL).addActionListener(event -> {
 			if (calculator.getBufferSize() > 0) {
 				displayPanel.clearText();
-				displayPanel.appendElement(calculator.getResult() + "");
+				displayPanel.appendElement(Double.toString(calculator.getResult()));
 			}
 		});
 	}
@@ -156,7 +149,7 @@ public class ButtonPanel extends JPanel {
 	 *
 	 * @param  displayPanel  a panel that displays the input text.
 	 */
-	private void formatClearButton(DisplayPanel displayPanel) {
+	private void formatClearButton(final DisplayPanel displayPanel) {
 		buttons.get(Calculator.Symbol.CLEAR).addActionListener(event -> {
 			displayPanel.clearText();
 			displayPanel.getList().clear();
@@ -169,13 +162,29 @@ public class ButtonPanel extends JPanel {
 	 *
 	 * @param  displayPanel  a panel that displays the input text.
 	 */
-	private void formatDeleteButton(DisplayPanel displayPanel) {
+	private void formatDeleteButton(final DisplayPanel displayPanel) {
 		buttons.get(Calculator.Symbol.DELETE).addActionListener(event -> {
 			if (calculator.getBufferSize() > 0) {
 				calculator.removeLastElement();
 				displayPanel.removeLastElement();
 			}
 		});
+	}
+
+	/**
+	 * Styles all operator buttons.
+	 */
+	private void styleOperatorButtons() {
+		buttons.get(Calculator.Symbol.ADDITION).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.SUBTRACTION).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.MULTIPLICATION).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.DIVISION).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.EXPONENTIATION).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.DECIMAL).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.CLEAR).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.DELETE).setBackground(Color.RED);
+		buttons.get(Calculator.Symbol.NEGATIVE).setBackground(Color.RED);
+		styleEqualButton();
 	}
 
 	/**
@@ -187,6 +196,13 @@ public class ButtonPanel extends JPanel {
 		buttons.get(Calculator.Symbol.EQUAL).setForeground(Color.WHITE);
 		buttons.get(Calculator.Symbol.EQUAL).setOpaque(true);
 		buttons.get(Calculator.Symbol.EQUAL).setBorderPainted(false);
+	}
+
+	/**
+	 * Add all buttons to this button panel.
+	 */ 
+	private void addButtons() {
+		buttons.values().forEach(this::add);
 	}
 
 	/**
