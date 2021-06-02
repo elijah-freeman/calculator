@@ -9,14 +9,13 @@
 
 import java.util.*;
 
+
 /**
  * Defines a Calculator that can perform the following calculations: 
  * multiplication, addition, subtraction, exponentiation. Calculator  
  * operate in EMDAS fashion.
  */
 public class Calculator {
-
-	private static final int NUMBER_OF_OPERATORS = 6;
 
 	/**
 	 * Buffer that contains the operators and operands.
@@ -29,9 +28,35 @@ public class Calculator {
 	private String recentOperator;
 
 	/**
-	 * List of operators.
+	 * Symbols that calculator can handle.
 	 */
-	private final String[] operators;
+	protected enum Symbol {
+		EXPONENTIATION,
+		MULTIPLICATION,
+		DIVISION,
+		ADDITION,
+		SUBTRACTION,
+		CLEAR,
+		DELETE,
+		DECIMAL,
+		NEGATIVE,
+		EQUAL,
+		ZERO,
+		ONE,
+		TWO,
+		THREE,
+		FOUR,
+		FIVE,
+		SIX,
+		SEVEN,
+		EIGHT,
+		NINE;
+	}	
+
+	/**
+	 * Maps symbols to their string counter-part.
+	 */
+	protected EnumMap<Symbol, String> symbolMap = new EnumMap<Symbol, String>(Symbol.class);
 
 	/**
 	 * Constructs calculator object. Initializes buffer and sets the official
@@ -39,14 +64,32 @@ public class Calculator {
 	 */
 	public Calculator() {
 		buffer = new ArrayDeque<>();
-		operators = new String[NUMBER_OF_OPERATORS];
 		recentOperator = null;
-		operators[0] = ")";
-		operators[1] = "^";
-		operators[2] = "*";
-		operators[3] = "/";
-		operators[4] = "+";
-		operators[5] = "-";
+		buildSymbolMap();
+	}
+
+	/**
+	 * Constructs the symbol map. Associates the the string symbol with the
+	 * operation type.
+	 */
+	private void buildSymbolMap() {
+		symbolMap.put(Symbol.EXPONENTIATION, "^");
+		symbolMap.put(Symbol.MULTIPLICATION, "*");
+		symbolMap.put(Symbol.DIVISION, "/");
+		symbolMap.put(Symbol.ADDITION, "+");
+		symbolMap.put(Symbol.SUBTRACTION, "-");
+		symbolMap.put(Symbol.DECIMAL, ".");
+		symbolMap.put(Symbol.EQUAL, "=");
+		symbolMap.put(Symbol.ZERO, "0");
+		symbolMap.put(Symbol.ONE, "1");
+		symbolMap.put(Symbol.TWO, "2");
+		symbolMap.put(Symbol.THREE, "3");
+		symbolMap.put(Symbol.FOUR, "4");
+		symbolMap.put(Symbol.FIVE, "5");
+		symbolMap.put(Symbol.SIX, "6");
+		symbolMap.put(Symbol.SEVEN, "7");
+		symbolMap.put(Symbol.EIGHT, "8");
+		symbolMap.put(Symbol.NINE, "9");
 	}
 
 	/**
@@ -65,6 +108,10 @@ public class Calculator {
 		}
 	}
 
+	/**
+	 * Checks if the input is multiple digits. If multiple digits, then convert
+	 * single digit strings into a multiple digit string.
+	 */
 	private void checkIfMultiDigit() {
 		if (buffer.size() > 1) {
 			String currentElement = buffer.removeFirst();
@@ -81,6 +128,13 @@ public class Calculator {
 		}
 	}
 
+	/**
+	 * Combines two digits to form a multidigit number.
+	 *
+	 * @param  firstDigit   the first digit in the multidigit number.
+	 * @param  secondDigit  the second digit in the multidigit number.
+	 * @return 		the newly formed multidigit number.
+	 */
 	private String combineDigits(String firstDigit, String secondDigit) {
 			firstDigit += secondDigit;
 			String multiDigitNumber = firstDigit;
@@ -92,10 +146,18 @@ public class Calculator {
 	 *
 	 * @param  element  a string representing either an operator or an 
 	 * 		    operand.
+	 * @return 	    true if the operator is a boolean, false otherwise.
 	 */
 	private boolean isOperator(String element) {
-		for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
-			if (element.equals(operators[i])) {
+		final String operators[] = {
+			symbolMap.get(Symbol.EXPONENTIATION),
+			symbolMap.get(Symbol.MULTIPLICATION),
+			symbolMap.get(Symbol.DIVISION),
+			symbolMap.get(Symbol.ADDITION),
+			symbolMap.get(Symbol.SUBTRACTION)
+		};
+		for (String operator : operators) {
+			if (element.equals(operator)) {
 				recentOperator = element;
 				return true;
 			}
@@ -118,7 +180,6 @@ public class Calculator {
 		} 
 	}
 
-
 	/**
 	 * Checks if operand specifies exponentiation.
 	 *
@@ -127,7 +188,7 @@ public class Calculator {
 	 * @return          true if operand specifies exponentiation. False otherwise.
 	 */
 	private boolean isExponentiation(String element) {
-		return element.equals("^");
+		return element.equals(symbolMap.get(Symbol.EXPONENTIATION));
 	}
 
 	/**
@@ -138,7 +199,7 @@ public class Calculator {
 	 * @return          true if operand specifies multiplicatin. False otherwise.
 	 */
 	private boolean isMultiplication(String element) {
-		return element.equals("*");
+		return element.equals(symbolMap.get(Symbol.MULTIPLICATION));
 	}
 
 	/**
@@ -149,7 +210,7 @@ public class Calculator {
 	 * @return          true if operand specifies division. False otherwise.
 	 */
 	private boolean isDivision(String element) {
-		return element.equals("/");
+		return element.equals(symbolMap.get(Symbol.DIVISION));
 	}
 
 	/**
@@ -160,7 +221,7 @@ public class Calculator {
 	 * @return          true if operand specifies addition. False otherwise.
 	 */
 	private boolean isAddition(String element) {
-		return element.equals("+");
+		return element.equals(symbolMap.get(Symbol.ADDITION));
 	}
 
 	/**
@@ -171,7 +232,7 @@ public class Calculator {
 	 * @return          true if operand specifies subtraction. False otherwise.
 	 */
 	private boolean isSubtraction(String element) {
-		return element.equals("-");
+		return element.equals(symbolMap.get(Symbol.SUBTRACTION));
 	}
 
 	/**
@@ -223,13 +284,25 @@ public class Calculator {
 	 * @return  the final result of the calculation.
 	 */
 	public double getResult() {
-		execute();
+		calculate();
 		return Double.parseDouble(buffer.removeFirst());
 	}
 
-	private void execute() {
+	/**
+	 * Performs calculation of remaining operations in the buffer.
+	 */
+	private void calculate() {
 		Deque<String> temp = new ArrayDeque<>();
 		System.out.printf("Buffer in Execute: %s\n", buffer.toString());
+		multiplyAndDivideRemainingElements(temp);
+		addAndSubtractRemainingElements(temp); 
+	}
+
+	/**
+	 * Checks whether buffer has any multiplication or division opeartions remaining. 
+	 * If true, then perform calculations.
+	 */
+	private void multiplyAndDivideRemainingElements(Deque<String> temp) {
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
 			if (isOperator(element)) {
@@ -248,6 +321,13 @@ public class Calculator {
 				temp.addFirst(element);
 			}
 		}
+	}
+
+	/**
+	 * Checks whether buffer has any addition or subtraction operations remaining. If
+	 * true, then perform calculations.
+	 */
+	private void addAndSubtractRemainingElements(Deque<String> temp) {
 		while (temp.size() > 0) {
 			final String element = temp.removeFirst();
 			if (isOperator(element)) {
