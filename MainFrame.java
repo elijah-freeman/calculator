@@ -11,17 +11,31 @@ import java.awt.*;
 
 public class MainFrame extends JFrame  {
 
+	private static final int CALCULATOR_WIDTH = 350;
+	private static final int CALCULATOR_HEIGHT = 500;
+
 	public MainFrame() {
+		setTitle("Calculator");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(CALCULATOR_WIDTH, CALCULATOR_HEIGHT);
 		setResizable(false);
-		setSize(350, 500);
-		setLocation(500, 500);
-		setTitle("Calculator");
+		setPositionOnScreen();
+		setupComponents();
+	}
+
+	private void setPositionOnScreen() {
+		final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+		final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		final int xCoordinate = screenWidth/2 - CALCULATOR_WIDTH/2;
+		final int yCoordinate = screenHeight/2 - CALCULATOR_HEIGHT/2;
+		setLocation(xCoordinate, yCoordinate);
+	}
+
+	private void setupComponents() {
 		setLayout(new BorderLayout());
 		ButtonPanel buttonPanel = new ButtonPanel();
-		new DisplayPanel();
-		DisplayPanel inputPrompt;
+		DisplayPanel inputPrompt = new DisplayPanel();
 		inputPrompt = buttonPanel.getDisplayPanel();
 		add(inputPrompt, BorderLayout.NORTH);
 		add(buttonPanel, BorderLayout.CENTER);

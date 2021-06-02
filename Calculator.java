@@ -1,30 +1,24 @@
 /*H*****************************************************************************
  * Filename: Calculator.java
- * Description: Defines a calculator class 
+ * Description: Defines a calculator class. Calculator implemented using a
+ * 		stack.
  * Comment: Paranthesis implementation is not complete.
  * Modified: 2021-05-11	File Created.
  * 	     2021-05-17 Finished implementation w/o parenthesis.
+ * 	     2021-06-01 Refactored and using a map of ENUMs for operators
+ * 	     		and digits.
  * Author: Elijah Freeman (elijah@elijahfreeman.com, elijahfreeman.com)
  ****************************************************************************H*/
 
 import java.util.*;
 
-
 /**
- * Defines a Calculator that can perform the following calculations: 
- * multiplication, addition, subtraction, exponentiation. Calculator  
- * operate in EMDAS fashion.
+ * Defines a calculator that can perform the following calculations: 
+ * exponentiation, multiplication, division, addition, and subtraction. 
  */
 public class Calculator {
 
-	/**
-	 * Buffer that contains the operators and operands.
-	 */
 	private final Deque<String> buffer;
-
-	/** 
-	 * Most recent operator.
-	 */
 	private String recentOperator;
 
 	/**
@@ -68,10 +62,6 @@ public class Calculator {
 		buildSymbolMap();
 	}
 
-	/**
-	 * Constructs the symbol map. Associates the the string symbol with the
-	 * operation type.
-	 */
 	private void buildSymbolMap() {
 		symbolMap.put(Symbol.EXPONENTIATION, "^");
 		symbolMap.put(Symbol.MULTIPLICATION, "*");
@@ -108,10 +98,6 @@ public class Calculator {
 		}
 	}
 
-	/**
-	 * Checks if the input is multiple digits. If multiple digits, then convert
-	 * single digit strings into a multiple digit string.
-	 */
 	private void checkIfMultiDigit() {
 		if (buffer.size() > 1) {
 			String currentElement = buffer.removeFirst();
@@ -128,25 +114,11 @@ public class Calculator {
 		}
 	}
 
-	/**
-	 * Combines two digits to form a multidigit number.
-	 *
-	 * @param  firstDigit   the first digit in the multidigit number.
-	 * @param  secondDigit  the second digit in the multidigit number.
-	 * @return 		the newly formed multidigit number.
-	 */
 	private String combineDigits(String firstDigit, String secondDigit) {
-			firstDigit += secondDigit;
+		firstDigit += secondDigit;
 		return firstDigit;
 	}
 
-	/**
-	 * Checks if element is an operator. If true then the operator is saved.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return 	    true if the operator is a boolean, false otherwise.
-	 */
 	private boolean isOperator(String element) {
 		final String[] operators = {
 			symbolMap.get(Symbol.EXPONENTIATION),
@@ -164,12 +136,6 @@ public class Calculator {
 		return false;
 	}
 
-	/**
-	 * Checks if the operator specifies exponentiation. If true, then carry
-	 * out operation.
-	 *
-	 * @param  operator  an operator to be checked.
-	 */
 	private void checkExponents(String operator) {
 		if (isExponentiation(operator)) {
 			final double secondOperand = Double.parseDouble(buffer.removeFirst());
@@ -177,104 +143,6 @@ public class Calculator {
 			final double firstOperand = Double.parseDouble(buffer.removeFirst());
 			exponentiate(firstOperand, secondOperand);
 		} 
-	}
-
-	/**
-	 * Checks if operand specifies exponentiation.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return          true if operand specifies exponentiation. False otherwise.
-	 */
-	private boolean isExponentiation(String element) {
-		return element.equals(symbolMap.get(Symbol.EXPONENTIATION));
-	}
-
-	/**
-	 * Checks if operand specifies mulitiplication.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return          true if operand specifies multiplicatin. False otherwise.
-	 */
-	private boolean isMultiplication(String element) {
-		return element.equals(symbolMap.get(Symbol.MULTIPLICATION));
-	}
-
-	/**
-	 * Checks if operand specifies division.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return          true if operand specifies division. False otherwise.
-	 */
-	private boolean isDivision(String element) {
-		return element.equals(symbolMap.get(Symbol.DIVISION));
-	}
-
-	/**
-	 * Checks if operand specifies addition.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return          true if operand specifies addition. False otherwise.
-	 */
-	private boolean isAddition(String element) {
-		return element.equals(symbolMap.get(Symbol.ADDITION));
-	}
-
-	/**
-	 * Checks if operand specifies subtraction.
-	 *
-	 * @param  element  a string representing either an operator or an 
-	 * 		    operand.
-	 * @return          true if operand specifies subtraction. False otherwise.
-	 */
-	private boolean isSubtraction(String element) {
-		return element.equals(symbolMap.get(Symbol.SUBTRACTION));
-	}
-
-	/**
-	 * Checks if operand specifies exponentiation.
-	 * 
-	 * @param  base      the base that the exponent is to operate on.
-	 * @param  exponent  the power that the base is raised too.
-	 */
-	private void exponentiate(double base, double exponent) {
-		final double result = Math.pow(base, exponent);
-		buffer.addFirst(Double.toString(result));
-	}
-
-	/**
-	 * Checks if operand specifies multiplication..
-	 */
-	private void multiply(double multiplier, double multiplicand) {
-		final double result = multiplier * multiplicand;
-		buffer.addFirst(Double.toString(result));
-	}
-
-	/**
-	 * Checks if operand specifies multiplication.
-	 */
-	private void divide(double dividend, double divisor) {
-		final double result = dividend / divisor;
-		buffer.addFirst(Double.toString(result));
-	}
-
-	/**
-	 * Checks if operand specifies addition.
-	 */
-	private void add(double firstSummand, double secondSummand) {
-		final double result = firstSummand + secondSummand;
-		buffer.addFirst(Double.toString(result));
-	}
-
-	/**
-	 * Checks if operand specifies subtraction.
-	 */
-	private void subtract(double minuend, double subtrahend) {
-		final double result = minuend - subtrahend;
-		buffer.addFirst(Double.toString(result));
 	}
 
 	/**
@@ -287,19 +155,12 @@ public class Calculator {
 		return Double.parseDouble(buffer.removeFirst());
 	}
 
-	/**
-	 * Performs calculation of remaining operations in the buffer.
-	 */
 	private void calculate() {
 		Deque<String> temp = new ArrayDeque<>();
 		multiplyAndDivideRemainingElements(temp);
 		addAndSubtractRemainingElements(temp); 
 	}
 
-	/**
-	 * Checks whether buffer has any multiplication or division opeartions remaining. 
-	 * If true, then perform calculations.
-	 */
 	private void multiplyAndDivideRemainingElements(Deque<String> temp) {
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
@@ -321,10 +182,6 @@ public class Calculator {
 		}
 	}
 
-	/**
-	 * Checks whether buffer has any addition or subtraction operations remaining. If
-	 * true, then perform calculations.
-	 */
 	private void addAndSubtractRemainingElements(Deque<String> temp) {
 		while (temp.size() > 0) {
 			final String element = temp.removeFirst();
@@ -340,6 +197,51 @@ public class Calculator {
 				buffer.addFirst(element);
 			}
 		}
+	}
+
+	private boolean isExponentiation(String element) {
+		return element.equals(symbolMap.get(Symbol.EXPONENTIATION));
+	}
+
+	private boolean isMultiplication(String element) {
+		return element.equals(symbolMap.get(Symbol.MULTIPLICATION));
+	}
+
+	private boolean isDivision(String element) {
+		return element.equals(symbolMap.get(Symbol.DIVISION));
+	}
+
+	private boolean isAddition(String element) {
+		return element.equals(symbolMap.get(Symbol.ADDITION));
+	}
+
+	private boolean isSubtraction(String element) {
+		return element.equals(symbolMap.get(Symbol.SUBTRACTION));
+	}
+
+	private void exponentiate(double base, double exponent) {
+		final double result = Math.pow(base, exponent);
+		buffer.addFirst(Double.toString(result));
+	}
+
+	private void multiply(double multiplier, double multiplicand) {
+		final double result = multiplier * multiplicand;
+		buffer.addFirst(Double.toString(result));
+	}
+
+	private void divide(double dividend, double divisor) {
+		final double result = dividend / divisor;
+		buffer.addFirst(Double.toString(result));
+	}
+
+	private void add(double firstSummand, double secondSummand) {
+		final double result = firstSummand + secondSummand;
+		buffer.addFirst(Double.toString(result));
+	}
+
+	private void subtract(double minuend, double subtrahend) {
+		final double result = minuend - subtrahend;
+		buffer.addFirst(Double.toString(result));
 	}
 
 	/**

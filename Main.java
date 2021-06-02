@@ -1,7 +1,6 @@
 /*H*****************************************************************************
  * Filename: Main.java
- * Description: 
- * Comment:
+ * Description: Starts the GUI.
  * Modified: 2021-05-05	Added header comments.
  * Author: Elijah Freeman (elijah@elijahfreeman.com, elijahfreeman.com)
  ****************************************************************************H*/
@@ -13,3 +12,4 @@ public class Main {
 		EventQueue.invokeLater(MainFrame::new);
 	}
 }
+

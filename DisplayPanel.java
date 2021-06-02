@@ -1,7 +1,6 @@
 /*H*****************************************************************************
  * Filename: DisplayPanel.java
- * Description: 
- * Comment:
+ * Description: Panel where the input and output is displayed to the user.
  * Modified: 2021-05-05	Added header comments.
  * Author: Elijah Freeman (elijah@elijahfreeman.com, elijahfreeman.com)
  ****************************************************************************H*/

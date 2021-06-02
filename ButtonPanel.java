@@ -2,7 +2,6 @@
  * Filename: ButtonPanel.java
  * Description: Panel that contains the buttons for the calculator. Formats
  * 		and styles all buttons.
- * Comment:
  * Modified: 2021-05-05	Added header comments.
  * 	     2021-05-11 Updated calculator logic.
  * 	     2021-05-19 Refactored and updated GUI.
@@ -22,19 +21,8 @@ public class ButtonPanel extends JPanel {
 	private static final int COLS = 4;
 	private static final int GAP = 3;
 
-	/**
-	 * The the input and output is displayed.
-	 */
 	private final DisplayPanel displayPanel;
-
-	/**
-	 * Processes operations and defines symbol mapping
-	 */
 	private final Calculator calculator;
-
-	/**
-	 * Maps each symbol to it's respective button.
-	 */
 	private final LinkedHashMap<Calculator.Symbol, JButton> buttons;
 
 	/**
@@ -51,18 +39,12 @@ public class ButtonPanel extends JPanel {
 		addButtons();
 	}
 
-	/**
-	 * Format the layout for calculator GUI buttons.
-	 */
 	private void formatGridLayout(final GridLayout layout) {
 		setLayout(layout);
 		layout.setHgap(GAP);
 		layout.setVgap(GAP);
 	}
 
-	/**
-	 * Initialize all calculator GUI buttons.
-	 */
 	private void initializeButtons() {
 		buttons.put(Calculator.Symbol.CLEAR, makeButton("clr"));
 		buttons.put(Calculator.Symbol.DELETE, makeButton("del"));
@@ -94,13 +76,6 @@ public class ButtonPanel extends JPanel {
 		formatDeleteButton(displayPanel);
 	}
 
-	/**
-	 * Button factory method that makes and returns a generic stylized button
-	 * with an eventlistener attached.
-	 *
-	 * @param  name  a String name that is to be displayed on the button (e.g. "+")
-	 * @return	 a stylized JButton with the name displayed. 
-	 */
 	private JButton makeButton(final String name) {
 		final JButton button = new JButton(name);
 		button.setFont(new Font("Gill Sans", Font.BOLD, 20));
@@ -129,12 +104,6 @@ public class ButtonPanel extends JPanel {
 		return button;
 	}
 
-	/**
-	 * Formats the equal button. Clears display panel and appends the 
-	 * result to the display panel.
-	 *
-	 * @param  displayPanel  a panel that displays the input text.
-	 */
 	private void formatEqualButton(final DisplayPanel displayPanel) {
 		buttons.get(Calculator.Symbol.EQUAL).addActionListener(event -> {
 			if (calculator.getBufferSize() > 0) {
@@ -144,11 +113,6 @@ public class ButtonPanel extends JPanel {
 		});
 	}
 
-	/**
-	 * Formats the clear button. Clears the display panel and calculator buffer.
-	 *
-	 * @param  displayPanel  a panel that displays the input text.
-	 */
 	private void formatClearButton(final DisplayPanel displayPanel) {
 		buttons.get(Calculator.Symbol.CLEAR).addActionListener(event -> {
 			displayPanel.clearText();
@@ -156,12 +120,7 @@ public class ButtonPanel extends JPanel {
 			calculator.clearBuffer();
 		});
 	}
-	/**
-	 * Formats the delete button. One input character deleted at a time from 
-	 * the display panel.
-	 *
-	 * @param  displayPanel  a panel that displays the input text.
-	 */
+
 	private void formatDeleteButton(final DisplayPanel displayPanel) {
 		buttons.get(Calculator.Symbol.DELETE).addActionListener(event -> {
 			if (calculator.getBufferSize() > 0) {
@@ -171,9 +130,6 @@ public class ButtonPanel extends JPanel {
 		});
 	}
 
-	/**
-	 * Styles all operator buttons.
-	 */
 	private void styleOperatorButtons() {
 		buttons.get(Calculator.Symbol.ADDITION).setBackground(Color.RED);
 		buttons.get(Calculator.Symbol.SUBTRACTION).setBackground(Color.RED);
@@ -187,9 +143,6 @@ public class ButtonPanel extends JPanel {
 		styleEqualButton();
 	}
 
-	/**
-	 * Styles the equal button.
-	 */
 	private void styleEqualButton() {
 		buttons.get(Calculator.Symbol.EQUAL).setFont(new Font("Arial", Font.BOLD, 15));
 		buttons.get(Calculator.Symbol.EQUAL).setBackground(Color.ORANGE);
@@ -198,18 +151,10 @@ public class ButtonPanel extends JPanel {
 		buttons.get(Calculator.Symbol.EQUAL).setBorderPainted(false);
 	}
 
-	/**
-	 * Add all buttons to this button panel.
-	 */ 
 	private void addButtons() {
 		buttons.values().forEach(this::add);
 	}
 
-	/**
-	 * Getter method for displayPanel.
-	 *
-	 * @return the display panel.
-	 */
 	public DisplayPanel getDisplayPanel() {
 		return displayPanel;
 	}
