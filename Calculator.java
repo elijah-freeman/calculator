@@ -90,12 +90,12 @@ public class Calculator {
 	 * @param  element  a string representing either an operator or an 
 	 * 		    operand.
 	 */
-	public void addElement(String element) {
+	public void addElement(final String element) {
 		buffer.addFirst(element);
 		checkIfMultiDigit();
-		if (!isOperator(element) && buffer.size() > 2) {
-			checkExponents(recentOperator); 
-		}
+	//	if (!isOperator(element) && buffer.size() > 2) {
+	//		checkExponents(recentOperator); 
+	//	}
 	}
 
 	private void checkIfMultiDigit() {
@@ -119,7 +119,7 @@ public class Calculator {
 		return firstDigit;
 	}
 
-	private boolean isOperator(String element) {
+	private boolean isOperator(final String element) {
 		final String[] operators = {
 			symbolMap.get(Symbol.EXPONENTIATION),
 			symbolMap.get(Symbol.MULTIPLICATION),
@@ -136,7 +136,7 @@ public class Calculator {
 		return false;
 	}
 
-	private void checkExponents(String operator) {
+	private void checkExponents(final String operator) {
 		if (isExponentiation(operator)) {
 			final double secondOperand = Double.parseDouble(buffer.removeFirst());
 			buffer.removeFirst();
@@ -156,12 +156,39 @@ public class Calculator {
 	}
 
 	private void calculate() {
-		Deque<String> temp = new ArrayDeque<>();
+		final Deque<String> temp = new ArrayDeque<>();
+		exponentiateElements(temp);
 		multiplyAndDivideRemainingElements(temp);
 		addAndSubtractRemainingElements(temp); 
 	}
 
-	private void multiplyAndDivideRemainingElements(Deque<String> temp) {
+	private void exponentiateElements(final Deque<String> temp) {
+		while (buffer.size() > 0) {
+			final String element = buffer.removeFirst();
+			if (isOperator(element)) {
+				if (isExponentiation(element)) {
+					final double secondOperand = Double.parseDouble(buffer.removeFirst());
+					final double firstOperand = Double.parseDouble(temp.removeFirst());
+					exponentiate(secondOperand, firstOperand);
+				} else {
+					temp.addFirst(element);
+				}
+			} else {
+				temp.addFirst(element);
+			}
+		}
+		while (temp.size() > 0) {
+			buffer.addFirst(temp.removeFirst());
+		} 
+		while (buffer.size() > 0) {
+			temp.addFirst(buffer.removeFirst());
+		}
+		while (temp.size() > 0) {
+			buffer.addFirst(temp.removeFirst());
+		}
+	}
+
+	private void multiplyAndDivideRemainingElements(final Deque<String> temp) {
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
 			if (isOperator(element)) {
@@ -182,7 +209,7 @@ public class Calculator {
 		}
 	}
 
-	private void addAndSubtractRemainingElements(Deque<String> temp) {
+	private void addAndSubtractRemainingElements(final Deque<String> temp) {
 		while (temp.size() > 0) {
 			final String element = temp.removeFirst();
 			if (isOperator(element)) {
@@ -199,47 +226,53 @@ public class Calculator {
 		}
 	}
 
-	private boolean isExponentiation(String element) {
+	private boolean isExponentiation(final String element) {
 		return element.equals(symbolMap.get(Symbol.EXPONENTIATION));
 	}
 
-	private boolean isMultiplication(String element) {
+	private boolean isMultiplication(final String element) {
 		return element.equals(symbolMap.get(Symbol.MULTIPLICATION));
 	}
 
-	private boolean isDivision(String element) {
+	private boolean isDivision(final String element) {
 		return element.equals(symbolMap.get(Symbol.DIVISION));
 	}
 
-	private boolean isAddition(String element) {
+	private boolean isAddition(final String element) {
 		return element.equals(symbolMap.get(Symbol.ADDITION));
 	}
 
-	private boolean isSubtraction(String element) {
+	private boolean isSubtraction(final String element) {
 		return element.equals(symbolMap.get(Symbol.SUBTRACTION));
 	}
 
-	private void exponentiate(double base, double exponent) {
+	private void exponentiate(final double base, final double exponent) {
 		final double result = Math.pow(base, exponent);
 		buffer.addFirst(Double.toString(result));
 	}
 
-	private void multiply(double multiplier, double multiplicand) {
+	private void multiply(final double multiplier, final double multiplicand) {
 		final double result = multiplier * multiplicand;
 		buffer.addFirst(Double.toString(result));
 	}
 
-	private void divide(double dividend, double divisor) {
-		final double result = dividend / divisor;
-		buffer.addFirst(Double.toString(result));
+	private void divide(final double dividend, final double divisor) {
+		double result;
+		try {
+			result = dividend / divisor;
+			buffer.addFirst(Double.toString(result));
+		} catch(ArithmeticException e) {
+			clearBuffer();
+			System.out.println(e + "Cannot Divide by zero");
+		}
 	}
 
-	private void add(double firstSummand, double secondSummand) {
+	private void add(final double firstSummand, final double secondSummand) {
 		final double result = firstSummand + secondSummand;
 		buffer.addFirst(Double.toString(result));
 	}
 
-	private void subtract(double minuend, double subtrahend) {
+	private void subtract(final double minuend, final double subtrahend) {
 		final double result = minuend - subtrahend;
 		buffer.addFirst(Double.toString(result));
 	}
