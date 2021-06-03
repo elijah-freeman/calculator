@@ -93,9 +93,6 @@ public class Calculator {
 	public void addElement(final String element) {
 		buffer.addFirst(element);
 		checkIfMultiDigit();
-	//	if (!isOperator(element) && buffer.size() > 2) {
-	//		checkExponents(recentOperator); 
-	//	}
 	}
 
 	private void checkIfMultiDigit() {
@@ -134,15 +131,6 @@ public class Calculator {
 			}
 		}
 		return false;
-	}
-
-	private void checkExponents(final String operator) {
-		if (isExponentiation(operator)) {
-			final double secondOperand = Double.parseDouble(buffer.removeFirst());
-			buffer.removeFirst();
-			final double firstOperand = Double.parseDouble(buffer.removeFirst());
-			exponentiate(firstOperand, secondOperand);
-		} 
 	}
 
 	/**
@@ -188,6 +176,29 @@ public class Calculator {
 		}
 	}
 
+//	private void operateOnElements(final Deque<String> primaryBuffer, final Deque<String> secondaryBuffer
+//					) {
+//
+//		while (primaryBuffer.size() > 0) {
+//			final String element = primaryBuffer.removeFirst();
+//			if (isOperator(element)) {
+//				if (isPrimaryFunction(element)) {
+//					final double firstOperand = Double.parseDouble(primaryBuffer.removeFirst());
+//					final double secondOperand = Double.parseDouble(secondaryBuffer.removeFirst());
+//					primaryFunction(firstOperand, secondOperand);
+//				} else if (isSecondaryFunction(element)) {
+//					final double firstOperand = Double.parseDouble(primaryBuffer.removeFirst());
+//					final double secondOperand = Double.parseDouble(secondaryBuffer.removeFirst());
+//					secondaryFunction(firstOperand, secondOperand);
+//				} else {
+//					secondaryBuffer.addFirst(element);
+//				}
+//			} else {
+//				secondaryBuffer.addFirst(element);
+//			}
+//		}
+//	}
+
 	private void multiplyAndDivideRemainingElements(final Deque<String> temp) {
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
@@ -225,6 +236,9 @@ public class Calculator {
 			}
 		}
 	}
+
+
+
 
 	private boolean isExponentiation(final String element) {
 		return element.equals(symbolMap.get(Symbol.EXPONENTIATION));
