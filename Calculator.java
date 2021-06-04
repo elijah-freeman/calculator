@@ -22,8 +22,6 @@ public class Calculator {
 
 	private final Deque<String> buffer;
 	private String recentOperator;
-	private final Predicate<String> isExponentiation = this::isExponentiation;
-	private final BiConsumer<Double, Double> exponentiate = this::exponentiate;
 
 	/**
 	 * Symbols that calculator can handle.
@@ -54,7 +52,7 @@ public class Calculator {
 	/**
 	 * Maps symbols to their string counter-part.
 	 */
-	protected EnumMap<Symbol, String> symbolMap = new EnumMap<>(Symbol.class);
+	protected final EnumMap<Symbol, String> symbolMap = new EnumMap<>(Symbol.class);
 
 	/**
 	 * Constructs calculator object. Initializes buffer and sets the official
@@ -115,7 +113,7 @@ public class Calculator {
 		}
 	}
 
-	private String combineDigits(String firstDigit, String secondDigit) {
+	private String combineDigits(String firstDigit, final String secondDigit) {
 		firstDigit += secondDigit;
 		return firstDigit;
 	}
