@@ -109,7 +109,7 @@ public class ButtonPanel extends JPanel {
 	}
 
 	/**
-	 * Creates, formats, adds funcionality  and returns a new JButton with 
+	 * Creates, formats, adds functionality  and returns a new JButton with
 	 * the provided name. General functionality added to all buttons.
 	 *
 	 * @param  name  the string displayed on the button.

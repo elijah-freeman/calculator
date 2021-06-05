@@ -2,7 +2,7 @@
  * Filename: Calculator.java
  * Description: Defines a calculator class. Calculator implemented using a
  * 		stack.
- * Comment: Paranthesis implementation is not complete.
+ * Comment: Parenthesis implementation is not complete.
  * Modified: 2021-05-11	File Created.
  * 	     2021-05-17 Finished implementation w/o parenthesis.
  * 	     2021-06-01 Refactored and using a map of ENUMs for operators
@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 /**
  * Defines a calculator that can perform the following calculations: 
  * exponentiation, multiplication, division, addition, and subtraction. Calculator
- * can recieve any number of expressions and carry out all the specified operations.
+ * can receive any number of expressions and carry out all the specified operations.
  * Expressions must be in infix order.
  */
 public class Calculator {
@@ -105,7 +105,7 @@ public class Calculator {
 
 	/**
 	 * Checks if the there are consecutive digits in the buffer. If true, 
-	 * then the digits are joined to form a multidigit number.
+	 * then the digits are joined to form a multi-digit number.
 	 */
 	private void checkIfMultiDigit() {
 		if (buffer.size() > 1) {
@@ -125,11 +125,11 @@ public class Calculator {
 	}
 
 	/**
-	 * Combites two digits and returns the multidigit result.
+	 * Combines two digits and returns the multi-digit result.
 	 * 
-	 * @param  firstDigit  the first digit in the multidigit number.
-	 * @param  secondDigit  the second digit in the multidigit number.
-	 * @return 		The newly formed multidigit string.
+	 * @param  firstDigit  the first digit in the multi-digit number.
+	 * @param  secondDigit  the second digit in the multi-digit number.
+	 * @return 		The newly formed multi-digit string.
 	 */
 	private String combineDigits(String firstDigit, final String secondDigit) {
 		firstDigit += secondDigit;
@@ -182,7 +182,7 @@ public class Calculator {
 	 * Carries out provided operations in order of precedence, either primary
 	 * or secondary. 
 	 *
-	 * @param  isPrimaryOperation    a Predicate funtional interface that determines
+	 * @param  isPrimaryOperation    a Predicate functional interface that determines
 	 * 				 if the operator specifies the primary function.
 	 * @param  isSecondaryOperation  a Predicate functional interface that determines 
 	 * 				 if the operator specifies the secondary function.
@@ -284,7 +284,7 @@ public class Calculator {
 	 * @param  exponent  the exponent that the base is raised to. 
 	 */
 	private void exponentiate(final Double base, final Double exponent) {
-		final double result = Math.pow(base.doubleValue(), exponent.doubleValue());
+		final double result = Math.pow(base, exponent);
 		buffer.addFirst(Double.toString(result));
 	}
 
@@ -295,7 +295,7 @@ public class Calculator {
 	 * @param  multiplicand  the quantity that is multiplied by the multiplier. 
 	 */
 	private void multiply(final Double multiplier, final Double multiplicand) {
-		final double result = multiplier.doubleValue() * multiplicand.doubleValue();
+		final double result = multiplier * multiplicand;
 		buffer.addFirst(Double.toString(result));
 	}
 
@@ -308,7 +308,7 @@ public class Calculator {
 	private void divide(final Double dividend, final Double divisor) {
 		double result;
 		try {
-			result = dividend.doubleValue() / divisor.doubleValue();
+			result = dividend / divisor;
 			buffer.addFirst(Double.toString(result));
 		} catch(ArithmeticException e) {
 			clearBuffer();
@@ -323,7 +323,7 @@ public class Calculator {
 	 * @param  secondSummand  the second summand that is added to the first summand.
 	 */
 	private void add(final Double firstSummand, final Double secondSummand) {
-		final double result = firstSummand.doubleValue() + secondSummand.doubleValue();
+		final double result = firstSummand + secondSummand;
 		buffer.addFirst(Double.toString(result));
 	}
 
@@ -334,7 +334,7 @@ public class Calculator {
 	 * @param  subtrahend  the number that is subtracted from another.
 	 */
 	private void subtract(final Double minuend, final Double subtrahend) {
-		final double result = minuend.doubleValue() - subtrahend.doubleValue();
+		final double result = minuend - subtrahend;
 		buffer.addFirst(Double.toString(result));
 	}
 

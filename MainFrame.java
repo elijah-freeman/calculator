@@ -39,7 +39,7 @@ public class MainFrame extends JFrame  {
 	}
 
 	/**
-	 * Sets up the intial position of the GUI on the screen.
+	 * Sets up the initial position of the GUI on the screen.
 	 */
 	private void setPositionOnScreen() {
 		final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -55,8 +55,8 @@ public class MainFrame extends JFrame  {
 	private void setupComponents() {
 		setLayout(new BorderLayout());
 		ButtonPanel buttonPanel = new ButtonPanel();
-		DisplayPanel inputPrompt = new DisplayPanel();
-		inputPrompt = buttonPanel.getDisplayPanel();
+		//DisplayPanel inputPrompt = new DisplayPanel();
+		DisplayPanel inputPrompt = buttonPanel.getDisplayPanel();
 		add(inputPrompt, BorderLayout.NORTH);
 		add(buttonPanel, BorderLayout.CENTER);
 	}
