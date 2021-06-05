@@ -7,6 +7,9 @@
 
 import java.awt.*;
 
+/**
+ * Initializes starts the calculator GUI.
+ */
 public class Main {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(MainFrame::new);
