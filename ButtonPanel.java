@@ -11,6 +11,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 
 /**
  * Initializes, formats, and styles all buttons for the calculator GUI. Requires
@@ -43,10 +44,20 @@ public class ButtonPanel extends JPanel {
 	 */
 	private final Calculator calculator;
 
-	/** 
-	 * A mapping between a Calculator Symbol and a button.
+	/**
+	 * A mapping between symbols and their respective buttons.
 	 */
-	private final LinkedHashMap<Calculator.Symbol, JButton> buttons;
+	private final LinkedHashMap<Symbol, JButton> symbolButtons;
+
+	/**
+	 * A mapping between operators and their respective buttons.
+	 */
+	private final LinkedHashMap<Operator, JButton> operatorButtons;
+
+	/**
+	 * A mapping between number and their respective buttons.
+	 */
+	private final LinkedHashMap<Number, JButton> numberButtons;
 
 	/**
 	 * Constructs button panel. Initializes layout, displayPanel, calculator object, 
@@ -56,11 +67,12 @@ public class ButtonPanel extends JPanel {
 		GridLayout layout = new GridLayout(ROWS, COLS);
 		displayPanel = new DisplayPanel();
 		calculator = new Calculator();
-		buttons = new LinkedHashMap<>();
+		symbolButtons = new LinkedHashMap<>();
+		operatorButtons = new LinkedHashMap<>();
+		numberButtons = new LinkedHashMap<>();
 		formatGridLayout(layout);
 		initializeButtons();
-		styleOperatorButtons();
-		addButtons();
+		styleOperatorAndSymbolButtons();
 	}
 
 	/**
@@ -78,30 +90,30 @@ public class ButtonPanel extends JPanel {
 	 * The appropriate calculator symbol is mapped to the corresponding button.
 	 */
 	private void initializeButtons() {
-		buttons.put(Calculator.Symbol.CLEAR, makeButton("clr"));
-		buttons.put(Calculator.Symbol.DELETE, makeButton("del"));
-		buttons.put(Calculator.Symbol.EXPONENTIATION, makeButton("^"));
-		buttons.put(Calculator.Symbol.MULTIPLICATION, makeButton("x"));
+		symbolButtons.put(Symbol.CLEAR, makeButton("clr"));
+		symbolButtons.put(Symbol.DELETE, makeButton("del"));
+		operatorButtons.put(Operator.EXPONENTIATION, makeButton("^"));
+		operatorButtons.put(Operator.MULTIPLICATION, makeButton("x"));
 
-		buttons.put(Calculator.Symbol.SEVEN, makeButton("7"));
-		buttons.put(Calculator.Symbol.EIGHT, makeButton("8"));
-		buttons.put(Calculator.Symbol.NINE, makeButton("9"));
-		buttons.put(Calculator.Symbol.DIVISION, makeButton("/"));
+		numberButtons.put(Number.SEVEN, makeButton("7"));
+		numberButtons.put(Number.EIGHT, makeButton("8"));
+		numberButtons.put(Number.NINE, makeButton("9"));
+		operatorButtons.put(Operator.DIVISION, makeButton("/"));
 
-		buttons.put(Calculator.Symbol.FOUR, makeButton("4"));
-		buttons.put(Calculator.Symbol.FIVE, makeButton("5"));
-		buttons.put(Calculator.Symbol.SIX, makeButton("6"));
-		buttons.put(Calculator.Symbol.ADDITION, makeButton("+"));
+		numberButtons.put(Number.FOUR, makeButton("4"));
+		numberButtons.put(Number.FIVE, makeButton("5"));
+		numberButtons.put(Number.SIX, makeButton("6"));
+		operatorButtons.put(Operator.ADDITION, makeButton("+"));
 
-		buttons.put(Calculator.Symbol.ONE, makeButton("1"));
-		buttons.put(Calculator.Symbol.TWO, makeButton("2"));
-		buttons.put(Calculator.Symbol.THREE, makeButton("3"));
-		buttons.put(Calculator.Symbol.SUBTRACTION, makeButton("-"));
+		numberButtons.put(Number.ONE, makeButton("1"));
+		numberButtons.put(Number.TWO, makeButton("2"));
+		numberButtons.put(Number.THREE, makeButton("3"));
+		operatorButtons.put(Operator.SUBTRACTION, makeButton("-"));
 
-		buttons.put(Calculator.Symbol.DECIMAL, makeButton("."));
-		buttons.put(Calculator.Symbol.ZERO, makeButton("0"));
-		buttons.put(Calculator.Symbol.NEGATIVE, makeButton("-"));
-		buttons.put(Calculator.Symbol.EQUAL, makeButton("="));
+		symbolButtons.put(Symbol.DECIMAL, makeButton("."));
+		numberButtons.put(Number.ZERO, makeButton("0"));
+		symbolButtons.put(Symbol.NEGATIVE, makeButton("-"));
+		symbolButtons.put(Symbol.EQUAL, makeButton("="));
 
 		formatEqualButton(displayPanel);
 		formatClearButton(displayPanel);
@@ -125,21 +137,20 @@ public class ButtonPanel extends JPanel {
 		button.addActionListener(event -> {
 			final String element = ((JButton) event.getSource()).getText();
 			assert element != null : "element is null";
-			buttons.forEach((k, v) -> {
-				if (v.getText().equals(element)
-						&& !k.equals(Calculator.Symbol.CLEAR)
-						&& !k.equals(Calculator.Symbol.DELETE)
-						&& !k.equals(Calculator.Symbol.NEGATIVE)) {
-
-						calculator.addElement(calculator.symbolMap.get(k));
+			numberButtons.forEach((k, v) -> {
+				if (v.getText().equals(element)) {
+						calculator.addElement(k.getNumber());
+						displayPanel.appendElement(v.getText());
 					}
 			});
-			if (!element.equals(buttons.get(Calculator.Symbol.EQUAL).getText())
-			    && !element.equals(buttons.get(Calculator.Symbol.CLEAR).getText())
-			    && !element.equals(buttons.get(Calculator.Symbol.DELETE).getText())) {
-				displayPanel.appendElement(element);
-			}
+			operatorButtons.forEach((k, v) -> {
+				if (v.getText().equals(element)) {
+					calculator.addElement(k.getOperator());
+					displayPanel.appendElement(v.getText());
+				}
+			});
 		});
+		add(button);
 		return button;
 	}
 
@@ -150,10 +161,11 @@ public class ButtonPanel extends JPanel {
 	 * @param  displayPanel  the display panel that the equal action modifies.
 	 */
 	private void formatEqualButton(final DisplayPanel displayPanel) {
-		buttons.get(Calculator.Symbol.EQUAL).addActionListener(event -> {
+		symbolButtons.get(Symbol.EQUAL).addActionListener(event -> {
 			if (calculator.getBufferSize() > 0) {
 				displayPanel.clearText();
-				displayPanel.appendElement(Double.toString(calculator.getResult()));
+				displayPanel.appendElement(Double
+						.toString(calculator.getResult()));
 			}
 		});
 	}
@@ -165,7 +177,7 @@ public class ButtonPanel extends JPanel {
 	 * @param  displayPanel  the display panel that the clear action modifies.  
 	 */
 	private void formatClearButton(final DisplayPanel displayPanel) {
-		buttons.get(Calculator.Symbol.CLEAR).addActionListener(event -> {
+		symbolButtons.get(Symbol.CLEAR).addActionListener(event -> {
 			displayPanel.clearText();
 			displayPanel.getList().clear();
 			calculator.clearBuffer();
@@ -178,7 +190,7 @@ public class ButtonPanel extends JPanel {
 	 * buffer is removed.
 	 */
 	private void formatDeleteButton(final DisplayPanel displayPanel) {
-		buttons.get(Calculator.Symbol.DELETE).addActionListener(event -> {
+		symbolButtons.get(Symbol.DELETE).addActionListener(event -> {
 			if (calculator.getBufferSize() > 0) {
 				calculator.removeLastElement();
 				displayPanel.removeLastElement();
@@ -189,16 +201,11 @@ public class ButtonPanel extends JPanel {
 	/**
 	 * The operator buttons are styled.
 	 */
-	private void styleOperatorButtons() {
-		buttons.get(Calculator.Symbol.ADDITION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.SUBTRACTION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.MULTIPLICATION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.DIVISION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.EXPONENTIATION).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.DECIMAL).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.CLEAR).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.DELETE).setBackground(Color.RED);
-		buttons.get(Calculator.Symbol.NEGATIVE).setBackground(Color.RED);
+	private void styleOperatorAndSymbolButtons() {
+		operatorButtons.values().stream().forEach(button -> 
+					button.setBackground(Color.RED));
+		symbolButtons.values().stream().forEach(button -> 
+					button.setBackground(Color.RED));
 		styleEqualButton();
 	}
 
@@ -207,18 +214,12 @@ public class ButtonPanel extends JPanel {
 	 * the operator buttons.
 	 */
 	private void styleEqualButton() {
-		buttons.get(Calculator.Symbol.EQUAL).setFont(new Font("Arial", Font.BOLD, 15));
-		buttons.get(Calculator.Symbol.EQUAL).setBackground(Color.ORANGE);
-		buttons.get(Calculator.Symbol.EQUAL).setForeground(Color.WHITE);
-		buttons.get(Calculator.Symbol.EQUAL).setOpaque(true);
-		buttons.get(Calculator.Symbol.EQUAL).setBorderPainted(false);
-	}
-
-	/**
-	 * Adds the buttons to this panel.
-	 */
-	private void addButtons() {
-		buttons.values().forEach(this::add);
+		symbolButtons.get(Symbol.EQUAL).setFont(
+				new Font("Arial", Font.BOLD, 15));
+		symbolButtons.get(Symbol.EQUAL).setBackground(Color.ORANGE);
+		symbolButtons.get(Symbol.EQUAL).setForeground(Color.WHITE);
+		symbolButtons.get(Symbol.EQUAL).setOpaque(true);
+		symbolButtons.get(Symbol.EQUAL).setBorderPainted(false);
 	}
 
 	/**

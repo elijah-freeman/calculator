@@ -55,7 +55,6 @@ public class MainFrame extends JFrame  {
 	private void setupComponents() {
 		setLayout(new BorderLayout());
 		ButtonPanel buttonPanel = new ButtonPanel();
-		//DisplayPanel inputPrompt = new DisplayPanel();
 		DisplayPanel inputPrompt = buttonPanel.getDisplayPanel();
 		add(inputPrompt, BorderLayout.NORTH);
 		add(buttonPanel, BorderLayout.CENTER);

@@ -13,6 +13,7 @@
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Defines a calculator that can perform the following calculations: 
@@ -21,37 +22,6 @@ import java.util.function.Predicate;
  * Expressions must be in infix order.
  */
 public class Calculator {
-
-	/** 
-	 * Symbols that calculator can handle. 
-	 */
-	protected enum Symbol {
-		EXPONENTIATION,
-		MULTIPLICATION,
-		DIVISION,
-		ADDITION,
-		SUBTRACTION,
-		CLEAR,
-		DELETE,
-		DECIMAL,
-		NEGATIVE,
-		EQUAL,
-		ZERO,
-		ONE,
-		TWO,
-		THREE,
-		FOUR,
-		FIVE,
-		SIX,
-		SEVEN,
-		EIGHT,
-		NINE
-	}	
-
-	/**
-	 * Maps symbols to their string counter-part.
-	 */
-	protected final EnumMap<Symbol, String> symbolMap = new EnumMap<>(Symbol.class);
 
 	/**
 	 * A stack that contains the input operators and operands.
@@ -64,30 +34,6 @@ public class Calculator {
 	 */
 	public Calculator() {
 		buffer = new ArrayDeque<>();
-		buildSymbolMap();
-	}
-
-	/**
-	 * Maps the name of the symbol to it's string equivalent.
-	 */
-	private void buildSymbolMap() {
-		symbolMap.put(Symbol.EXPONENTIATION, "^");
-		symbolMap.put(Symbol.MULTIPLICATION, "*");
-		symbolMap.put(Symbol.DIVISION, "/");
-		symbolMap.put(Symbol.ADDITION, "+");
-		symbolMap.put(Symbol.SUBTRACTION, "-");
-		symbolMap.put(Symbol.DECIMAL, ".");
-		symbolMap.put(Symbol.EQUAL, "=");
-		symbolMap.put(Symbol.ZERO, "0");
-		symbolMap.put(Symbol.ONE, "1");
-		symbolMap.put(Symbol.TWO, "2");
-		symbolMap.put(Symbol.THREE, "3");
-		symbolMap.put(Symbol.FOUR, "4");
-		symbolMap.put(Symbol.FIVE, "5");
-		symbolMap.put(Symbol.SIX, "6");
-		symbolMap.put(Symbol.SEVEN, "7");
-		symbolMap.put(Symbol.EIGHT, "8");
-		symbolMap.put(Symbol.NINE, "9");
 	}
 
 	/**
@@ -132,8 +78,7 @@ public class Calculator {
 	 * @return 		The newly formed multi-digit string.
 	 */
 	private String combineDigits(String firstDigit, final String secondDigit) {
-		firstDigit += secondDigit;
-		return firstDigit;
+		return firstDigit += secondDigit;
 	}
 
 	/**
@@ -143,15 +88,8 @@ public class Calculator {
 	 * @return 	    true if element is an operator, false otherwise.
 	 */
 	private boolean isOperator(final String element) {
-		final String[] operators = { symbolMap.get(Symbol.EXPONENTIATION),
-						symbolMap.get(Symbol.MULTIPLICATION),
-						symbolMap.get(Symbol.DIVISION),
-						symbolMap.get(Symbol.ADDITION),
-						symbolMap.get(Symbol.SUBTRACTION) };
-		for (String operator : operators) {
-			if (element.equals(operator)) return true;
-		}
-		return false;
+		return Stream.of(Operator.values()).anyMatch(value 
+				-> element.equals(value.getOperator()));
 	}
 
 	/**
@@ -168,11 +106,11 @@ public class Calculator {
 	 * Carries out all operations in buffer.
 	 */
 	private void calculate() {
-		operateOnElements(this::isExponentiation, this::isExponentiation,
+		operateOnElements(this::isExponentiation, this::isExponentiation, 
 						this::exponentiate, this::exponentiate);
 
 		operateOnElements(this::isMultiplication, this::isDivision, 
-						this::multiply,this::divide);
+						this::multiply, this::divide);
 
 		operateOnElements(this::isAddition, this::isSubtraction, 
 						this::add, this::subtract);
@@ -194,8 +132,7 @@ public class Calculator {
 	private void operateOnElements(Predicate<String> isPrimaryOperation,
 					Predicate<String> isSecondaryOperation,
 					BiConsumer<Double, Double> primaryOperation,
-					BiConsumer<Double, Double> secondaryOperation
-										    ) {
+					BiConsumer<Double, Double> secondaryOperation) {
 		final Deque<String> temp = new ArrayDeque<>();
 		while (buffer.size() > 0) {
 			final String element = buffer.removeFirst();
@@ -233,7 +170,7 @@ public class Calculator {
 	 * @return true if element specifies exponentiation, false otherwise.
 	 */
 	private boolean isExponentiation(final String element) {
-		return element.equals(symbolMap.get(Symbol.EXPONENTIATION));
+		return Operator.EXPONENTIATION.isOperator(element);
 	}
 
 	/**
@@ -243,7 +180,7 @@ public class Calculator {
 	 * @return true if element specifies multiplication, false otherwise.
 	 */
 	private boolean isMultiplication(final String element) {
-		return element.equals(symbolMap.get(Symbol.MULTIPLICATION));
+		return Operator.MULTIPLICATION.isOperator(element);
 	}
 
 	/**
@@ -253,7 +190,7 @@ public class Calculator {
 	 * @return true if element specifies division, false otherwise.
 	 */
 	private boolean isDivision(final String element) {
-		return element.equals(symbolMap.get(Symbol.DIVISION));
+		return Operator.DIVISION.isOperator(element);
 	}
 
 	/**
@@ -263,7 +200,7 @@ public class Calculator {
 	 * @return true if element specifies addition, false otherwise.
 	 */
 	private boolean isAddition(final String element) {
-		return element.equals(symbolMap.get(Symbol.ADDITION));
+		return Operator.ADDITION.isOperator(element);
 	}
 
 	/**
@@ -273,9 +210,8 @@ public class Calculator {
 	 * @return true if element specifies subtraction, false otherwise.
 	 */
 	private boolean isSubtraction(final String element) {
-		return element.equals(symbolMap.get(Symbol.SUBTRACTION));
+		return Operator.SUBTRACTION.isOperator(element);
 	}
-
 
 	/**
 	 * Carries out exponentiation using the provided base and exponent.
@@ -284,8 +220,7 @@ public class Calculator {
 	 * @param  exponent  the exponent that the base is raised to. 
 	 */
 	private void exponentiate(final Double base, final Double exponent) {
-		final double result = Math.pow(base, exponent);
-		buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(Math.pow(base, exponent)));
 	}
 
 	/**
@@ -295,8 +230,7 @@ public class Calculator {
 	 * @param  multiplicand  the quantity that is multiplied by the multiplier. 
 	 */
 	private void multiply(final Double multiplier, final Double multiplicand) {
-		final double result = multiplier * multiplicand;
-		buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(multiplier * multiplicand));
 	}
 
 	/**
@@ -323,8 +257,7 @@ public class Calculator {
 	 * @param  secondSummand  the second summand that is added to the first summand.
 	 */
 	private void add(final Double firstSummand, final Double secondSummand) {
-		final double result = firstSummand + secondSummand;
-		buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(firstSummand + secondSummand));
 	}
 
 	/**
@@ -334,8 +267,7 @@ public class Calculator {
 	 * @param  subtrahend  the number that is subtracted from another.
 	 */
 	private void subtract(final Double minuend, final Double subtrahend) {
-		final double result = minuend - subtrahend;
-		buffer.addFirst(Double.toString(result));
+		buffer.addFirst(Double.toString(minuend - subtrahend));
 	}
 
 	/**
