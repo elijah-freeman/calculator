@@ -17,7 +17,7 @@ public enum Number {
 	EIGHT ("8"),
 	NINE ("9");
 
-	private String number;
+	private final String number;
 
 	Number(String number) {
 		this.number = number;

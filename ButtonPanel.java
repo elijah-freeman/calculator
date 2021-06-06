@@ -11,7 +11,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
-import java.util.stream.Stream;
 
 /**
  * Initializes, formats, and styles all buttons for the calculator GUI. Requires
@@ -202,9 +201,9 @@ public class ButtonPanel extends JPanel {
 	 * The operator buttons are styled.
 	 */
 	private void styleOperatorAndSymbolButtons() {
-		operatorButtons.values().stream().forEach(button -> 
+		operatorButtons.values().forEach(button ->
 					button.setBackground(Color.RED));
-		symbolButtons.values().stream().forEach(button -> 
+		symbolButtons.values().forEach(button ->
 					button.setBackground(Color.RED));
 		styleEqualButton();
 	}

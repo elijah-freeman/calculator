@@ -12,7 +12,7 @@ public enum Symbol {
 	DELETE ("delete"),
 	CLEAR ("clear");
 
-	private String symbol;
+	private final String symbol;
 
 	Symbol(final String symbol) {
 		this.symbol = symbol;

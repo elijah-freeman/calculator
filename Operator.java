@@ -12,7 +12,7 @@ public enum Operator {
 	ADDITION ("+"),
 	SUBTRACTION ("-");
 
-	private String operator;
+	private final String operator;
 
 	Operator(String operator) {
 		this.operator = operator;
